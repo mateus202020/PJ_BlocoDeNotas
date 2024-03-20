@@ -25,6 +25,7 @@ export function Singup(){
         }
         api.post("/users", {name,email, password}).then(() => {
             alert("Usuário Cadastrado com sucesso!");
+            navigate("/");
         }).catch(error => {
             if(error.response){
                 alert(error.response.data.message);
