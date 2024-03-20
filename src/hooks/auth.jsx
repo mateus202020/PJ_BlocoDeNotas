@@ -7,16 +7,15 @@ function AuthProvider({children}){
 
     const [data, setData] = useState({});
 
-    async function  Signin({email, password}){
+    async function Signin({email, password}){
         try{
             const response = await api.post("/sessions", {email, password});
             const {user, token} = response.data;
             
             localStorage.setItem("@BlocoNotas:user", JSON.stringify(user));
             localStorage.setItem("@BlocoNotas:token", token);
-            
-            console.log(response, token);
-            api.defaults.headers.authorization = `Bearer ${token}`;
+        
+            api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
             setData({user, token});
 
         }catch(error){
@@ -36,12 +35,27 @@ function AuthProvider({children}){
         setData({})
     }
 
+    async function updateProfile({user}){
+        try{
+            await api.put("/users", user);
+            localStorage.setItem("@BlocoNotas:user", JSON.stringify(user));
+            setData({user, token: data.token})
+            alert("Perfil atualizado!");
+        }catch(error){
+            if(error.response){
+                alert(error.response.data.message);
+            }else{
+                alert("Não foi possível atualizar o perfil.")
+            }
+        }
+    }
+
     useEffect(() => {
         const token = localStorage.getItem("@BlocoNotas:token");
         const user = localStorage.getItem("@BlocoNotas:user");
 
         if(token && user){
-            api.defaults.headers.authorization = `Bearer ${token}`;
+            api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
             setData({
                 token,
                 user: JSON.parse(user)
@@ -50,7 +64,7 @@ function AuthProvider({children}){
     }, []);
     
     return(
-        <AuthContext.Provider value={{Signin, signOut, user: data.user}}>
+        <AuthContext.Provider value={{Signin, signOut,updateProfile, user: data.user}}>
             {children}
         </AuthContext.Provider>
     )
