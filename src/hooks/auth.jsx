@@ -29,6 +29,13 @@ function AuthProvider({children}){
        
     }
 
+    function signOut(){
+        localStorage.removeItem("@BlocoNotas:token");
+        localStorage.removeItem("@BlocoNotas:user");
+
+        setData({})
+    }
+
     useEffect(() => {
         const token = localStorage.getItem("@BlocoNotas:token");
         const user = localStorage.getItem("@BlocoNotas:user");
@@ -43,7 +50,7 @@ function AuthProvider({children}){
     }, []);
     
     return(
-        <AuthContext.Provider value={{Signin, user: data.user}}>
+        <AuthContext.Provider value={{Signin, signOut, user: data.user}}>
             {children}
         </AuthContext.Provider>
     )
