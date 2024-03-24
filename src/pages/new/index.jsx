@@ -1,5 +1,7 @@
 import { Container, Form } from "./style";
 
+import { useState } from "react";
+
 import {Header} from '../../componentes/Header';
 
 import {Input} from '../../componentes/input';
@@ -15,6 +17,19 @@ import { Button } from "../../componentes/button";
 import {Link} from 'react-router-dom';
 
 export function New(){
+
+    const [links, setLinks] = useState([]);
+    const [newLink, setNewLink] = useState("");
+
+    function handleAddLink() {
+        setLinks(prevState => [...prevState, newLink]);
+        setNewLink("");
+      }
+
+      function handleRemoveLink(deleted){
+        setLinks(prevState => prevState.filter(link => link !== deleted));
+      }
+
     return(
         <Container>
             <Header/>
@@ -31,14 +46,29 @@ export function New(){
                     <Textarea placeholder='Observações'/>
 
                     <Section title="Links úteis">
-                        <NoteItem value="https://rocketseat.com.br"/>
-                        <NoteItem novo placeholder="Novo link"/>
+                        {
+                            links.map((link, index) => (
+                                <NoteItem 
+                                    key={String(index)}
+                                    value={link}
+                                    onClick={() => {handleRemoveLink(link)}}
+                                />
+                            ))
+                        }
+                       
+                        <NoteItem
+                            isNew
+                            placeholder="Novo link"
+                            value={newLink}
+                            onChange={e => setNewLink(e.target.value)}
+                            onClick={handleAddLink}
+                        />
                     </Section>
 
                     <Section title='Marcadores'>
                         <div className="tags">
                             <NoteItem value="react"/>
-                            <NoteItem novo placeholder='Novo tag'/>            
+                            <NoteItem isNew placeholder='Novo tag'/>            
                         </div>           
                     </Section>
 
