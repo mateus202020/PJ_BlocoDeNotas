@@ -1,5 +1,6 @@
-
 import {Container, Brand, Menu, Search, Content, NewNote} from './style';
+
+import { useState, useEffect } from 'react';
 
 import { Header } from '../../componentes/Header';
 
@@ -13,7 +14,22 @@ import {Section} from '../../componentes/section';
 
 import {Note} from '../../componentes/note';
 
+import {api} from "../../services/api";
+
 export function Home(){
+
+    const [tags, setTags] = useState([]);
+
+    useEffect(() => {
+        async function fetchTags(){
+            const response = await api.get("/tags");
+            setTags(response.data);
+        }
+
+        fetchTags();
+
+    },[]);
+
     return(
         <Container>
              <Brand>
@@ -24,8 +40,11 @@ export function Home(){
 
             <Menu>
                 <li><ButtonText title='Todos' $isactive/></li>
-                <li><ButtonText title='React'/></li>
-                <li><ButtonText title='Nodejs'/></li>
+                {
+                    tags && tags.map(tag => (
+                        <li key={String(tag.id)}><ButtonText title={tag.name}/></li>
+                    ))
+                }
             </Menu>
 
             <Search>
