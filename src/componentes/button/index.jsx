@@ -1,17 +1,14 @@
-/* eslint-disable react/prop-types */
-import { Container } from "./style";
+import { Container } from './style';
 
-export function Button({title, loading, ...rest}){
+export function Button({ title, loading = false, ...rest  }) {
 
-    return(
-        <Container 
-            type='button'
-            disabled = {loading}
-            {...rest}
-        >
-            {loading ? 'Carregando...' : title}
-            
-        </Container>
-    )
-
+  return (
+    <Container 
+        type="button"
+        disabled={loading}
+        {...rest}
+    >
+      { loading ? 'Carregando...' : title }
+    </Container>
+  )
 }
